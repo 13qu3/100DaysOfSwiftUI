@@ -130,12 +130,13 @@ struct Deck {
   }
 
   mutating func drawCard() -> Card {
+    var drawedCard = self.drawingPile.popLast()!
+    self.cardsInGame.append(drawedCard)
+    print(self.discardPile.count)
+    print(self.drawingPile.count)
     if self.drawingPile.isEmpty {
       self.shuffleDiscardPile()
     }
-
-    var drawedCard = self.drawingPile.popLast()!
-    self.cardsInGame.append(drawedCard)
     return drawedCard
   }
 
@@ -166,42 +167,53 @@ struct Game {
 var leGame = Game()
 
 leGame.drawCard()
-leGame.drawCard()
-leGame.drawCard()
-leGame.drawCard()
-leGame.drawCard()
-leGame.drawCard()
-leGame.drawCard()
-leGame.drawCard()
-leGame.drawCard()
-leGame.drawCard()
-leGame.drawCard()
-leGame.drawCard()
-leGame.drawCard()
-leGame.drawCard()
-leGame.drawCard()
-leGame.drawCard()
-leGame.drawCard()
-leGame.drawCard()
-leGame.drawCard()
-leGame.drawCard()
-leGame.drawCard()
-leGame.drawCard()
-leGame.drawCard()
-leGame.drawCard()
-leGame.drawCard()
-leGame.drawCard()
-leGame.drawCard()
-leGame.drawCard()
-leGame.drawCard()
-leGame.drawCard()
-leGame.drawCard()
-leGame.drawCard()
-leGame.drawCard()
-leGame.drawCard()
-leGame.drawCard()
-leGame.drawCard()
-leGame.drawCard()
-leGame.drawCard()
-leGame.drawCard()
-leGame.drawCard()
+
+printCheckpoint(checkpoint: 4)
+
+enum OutOfBoundsError: Error {
+  case tooLow, tooHigh
+}
+
+enum FindSquareRootOfError: Error {
+  case noSquareRoot
+  case outOfBounds(OutOfBoundsError)
+}
+
+func findSquareRootOf(_ number: Int,from min: Int = 1, to max: Int = 10_000) throws -> Int{
+  if (number < min) { throw FindSquareRootOfError.outOfBounds(.tooLow) }
+  if (number > max) { throw FindSquareRootOfError.outOfBounds(.tooHigh) }
+  
+  var squareRoot: Int = 0
+  for possibleRoot in min...max {
+    if possibleRoot * possibleRoot == number {
+      squareRoot = possibleRoot
+      break
+    }
+  }
+  
+  if squareRoot == 0 { throw FindSquareRootOfError.noSquareRoot }
+  
+  return squareRoot
+}
+
+
+func printSquareRootOf(_ number: Int) {
+  do {
+    let squareRoot = try findSquareRootOf(number)
+    print(squareRoot)
+  } catch FindSquareRootOfError.noSquareRoot {
+    print("No root found")
+  } catch FindSquareRootOfError.outOfBounds(.tooLow) {
+    print("Please enter a number larger than 0")
+  } catch FindSquareRootOfError.outOfBounds(.tooHigh) {
+    print("Please enter a number smaller than 10.001")
+  } catch {
+    print("A wild Squirtle appears!" )
+  }
+}
+
+printSquareRootOf(10_001)
+printSquareRootOf(-1)
+printSquareRootOf(55)
+printSquareRootOf(25)
+
