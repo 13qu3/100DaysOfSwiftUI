@@ -132,11 +132,11 @@ struct Deck {
   mutating func drawCard() -> Card {
     var drawedCard = self.drawingPile.popLast()!
     self.cardsInGame.append(drawedCard)
-    print(self.discardPile.count)
-    print(self.drawingPile.count)
+
     if self.drawingPile.isEmpty {
       self.shuffleDiscardPile()
     }
+
     return drawedCard
   }
 
@@ -179,23 +179,22 @@ enum FindSquareRootOfError: Error {
   case outOfBounds(OutOfBoundsError)
 }
 
-func findSquareRootOf(_ number: Int,from min: Int = 1, to max: Int = 10_000) throws -> Int{
-  if (number < min) { throw FindSquareRootOfError.outOfBounds(.tooLow) }
-  if (number > max) { throw FindSquareRootOfError.outOfBounds(.tooHigh) }
-  
-  var squareRoot: Int = 0
-  for possibleRoot in min...max {
+func findSquareRootOf(_ number: Int, from min: Int = 1, to max: Int = 10_000) throws -> Int {
+  if number < min { throw FindSquareRootOfError.outOfBounds(.tooLow) }
+  if number > max { throw FindSquareRootOfError.outOfBounds(.tooHigh) }
+
+  var squareRoot = 0
+  for possibleRoot in min ... max {
     if possibleRoot * possibleRoot == number {
       squareRoot = possibleRoot
       break
     }
   }
-  
+
   if squareRoot == 0 { throw FindSquareRootOfError.noSquareRoot }
-  
+
   return squareRoot
 }
-
 
 func printSquareRootOf(_ number: Int) {
   do {
@@ -208,7 +207,7 @@ func printSquareRootOf(_ number: Int) {
   } catch FindSquareRootOfError.outOfBounds(.tooHigh) {
     print("Please enter a number smaller than 10.001")
   } catch {
-    print("A wild Squirtle appears!" )
+    print("A wild Squirtle appears!")
   }
 }
 
@@ -217,3 +216,16 @@ printSquareRootOf(-1)
 printSquareRootOf(55)
 printSquareRootOf(25)
 
+printCheckpoint(checkpoint: 5)
+
+let luckyNumbers = [7, 4, 38, 21, 16, 15, 12, 33, 31, 49]
+
+luckyNumbers.filter {
+  !$0.isMultiple(of: 2)
+}.sorted {
+  $0 < $1
+}.map {
+  "\($0) is lucky number"
+}.forEach {
+  print($0)
+}
