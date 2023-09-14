@@ -229,3 +229,86 @@ luckyNumbers.filter {
 }.forEach {
   print($0)
 }
+
+printCheckpoint(checkpoint: 6)
+
+enum GearRange: Int {
+  case min = 1
+  case max = 10
+}
+
+enum GearDirection: Int {
+  case up = 1
+  case down = -1
+}
+
+struct Car {
+  let model: String
+  let seatCount: Int
+  let gearCount: Int
+  private(set) var currentGear: Int = 1 {
+    didSet {
+      print("Changed gear from \(oldValue) to \(self.currentGear)")
+    }
+  }
+
+  static func validateGearCount(_ gearCount: Int) -> Bool {
+    if gearCount < GearRange.min.rawValue {
+      print("Can't create instance: Too less gears")
+      return false
+    } else if gearCount > GearRange.max.rawValue {
+      print("Can't create instance: Too many gears")
+      return false
+    } else {
+      print("Engine is ready")
+      return true
+    }
+  }
+
+  init?(model: String, seatCount: Int, gearCount: Int = 5) {
+    if !Self.validateGearCount(gearCount) {
+      return nil
+    }
+
+    self.model = model
+    self.seatCount = seatCount
+    self.gearCount = gearCount
+  }
+
+  private func getNextGear(_ gear: GearDirection.RawValue) -> Int {
+    let nextGear = self.currentGear + gear
+    if nextGear > self.gearCount {
+      print("There is no higer gear than \(self.currentGear)")
+      return self.currentGear
+    } else if nextGear < GearRange.min.rawValue {
+      print("There is no lower gear than \(self.currentGear)")
+      return self.currentGear
+    } else {
+      return nextGear
+    }
+  }
+
+  mutating func setCurrentGear(_ direction: GearDirection) {
+    if self.currentGear == self.getNextGear(direction.rawValue) {
+      print("Gear not changed")
+    } else {
+      self.currentGear = self.getNextGear(direction.rawValue)
+    }
+  }
+}
+
+var batmobil = Car(model: "Batley", seatCount: 2, gearCount: 12)
+var porsche = Car(model: "911", seatCount: 2, gearCount: 6)
+var foot = Car(model: "Foo", seatCount: 0, gearCount: -1)
+
+porsche?.setCurrentGear(.up)
+porsche?.setCurrentGear(.up)
+porsche?.setCurrentGear(.up)
+porsche?.setCurrentGear(.up)
+porsche?.setCurrentGear(.up)
+porsche?.setCurrentGear(.up)
+porsche?.setCurrentGear(.down)
+porsche?.setCurrentGear(.down)
+porsche?.setCurrentGear(.up)
+porsche?.setCurrentGear(.up)
+porsche?.setCurrentGear(.up)
